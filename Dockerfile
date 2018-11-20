@@ -10,7 +10,7 @@ RUN apt-get update &&  apt-get install -qq curl apt-transport-https git build-es
     && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install additional php extensions
-RUN docker-php-ext-install mcrypt pdo_mysql zip
+RUN docker-php-ext-install mcrypt pdo_mysql zip gd
 
 # Install Composer
 RUN curl --silent --show-error https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
