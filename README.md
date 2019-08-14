@@ -2,7 +2,7 @@
 
 This Image contains:
 
-- PHP 7.1
+- PHP 7.2
 - Node 8
 - Yarn
 - Composer
