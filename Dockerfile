@@ -6,7 +6,7 @@ MAINTAINER Istvan Drahos <drahos.istvan@gmail.com>
 RUN apt-get update &&  apt-get install -qq curl apt-transport-https git build-essential \
     libssl-dev libzip-dev wget unzip bzip2 libbz2-dev zlib1g-dev libfontconfig \
     libfreetype6-dev libjpeg62-turbo-dev libpng-dev  libicu-dev libxml2-dev \
-    libldap2-dev libmcrypt-dev jq gnupg  zip unzip openssh-client \
+    libldap2-dev libmcrypt-dev jq gnupg  zip unzip openssh-client libsodium23 libsodium-dev \
     && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install and enable mcrypt
@@ -14,7 +14,7 @@ RUN pecl install mcrypt-1.0.2
 RUN docker-php-ext-enable mcrypt
 
 # Install additional php extensions
-RUN docker-php-ext-install zip gd
+RUN docker-php-ext-install zip gd exif sodium
 
 # Install Composer
 RUN curl --silent --show-error https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
