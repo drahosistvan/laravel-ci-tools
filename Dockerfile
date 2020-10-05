@@ -1,4 +1,4 @@
-FROM php:7.3
+FROM php:7.4
 
 MAINTAINER Istvan Drahos <drahos.istvan@gmail.com>
 
@@ -10,7 +10,7 @@ RUN apt-get update &&  apt-get install -qq curl apt-transport-https git build-es
     && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install and enable mcrypt
-RUN pecl install mcrypt-1.0.2
+RUN pecl install mcrypt
 RUN docker-php-ext-enable mcrypt
 
 # Install additional php extensions
