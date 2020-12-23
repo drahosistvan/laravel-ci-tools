@@ -7,6 +7,7 @@ RUN apt-get update &&  apt-get install -qq curl apt-transport-https git build-es
     libssl-dev libzip-dev wget unzip bzip2 libbz2-dev zlib1g-dev libfontconfig \
     libfreetype6-dev libjpeg62-turbo-dev libpng-dev  libicu-dev libxml2-dev \
     libldap2-dev libmcrypt-dev jq gnupg  zip unzip openssh-client libsodium23 libsodium-dev \
+    rsync grsync \
     && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install and enable mcrypt
