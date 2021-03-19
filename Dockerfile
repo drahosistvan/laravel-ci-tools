@@ -29,9 +29,8 @@ RUN composer global require "laravel/vapor-cli"
 
 # Install Node (with NPM), and Yarn (via package manager for Debian)
 # https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
 RUN apt-get update \
     && apt-get install -y \
     nodejs
 RUN npm install -g yarn
-
