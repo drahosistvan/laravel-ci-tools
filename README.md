@@ -4,8 +4,8 @@ This image is for building, testing and deploying Laravel applications from dock
 
 ## Softwares included
 
-- PHP 7.3
-- nodeJS 10 (current LTS version)
+- PHP 7.4
+- nodeJS 14 (current LTS version)
 - Yarn
 - Composer
 - Laravel Envoy
