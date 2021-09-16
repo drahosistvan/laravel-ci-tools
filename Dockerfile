@@ -1,7 +1,5 @@
 FROM php:7.4
 
-MAINTAINER Istvan Drahos <drahos.istvan@gmail.com>
-
 # Install linux dependencies
 RUN apt-get update &&  apt-get install -qq curl apt-transport-https git build-essential \
     libssl-dev libzip-dev wget unzip bzip2 libbz2-dev zlib1g-dev libfontconfig \
@@ -17,6 +15,9 @@ RUN docker-php-ext-enable mcrypt
 # Install additional php extensions
 RUN docker-php-ext-install zip gd exif sodium
 
+# Install docker
+RUN curl -sSL https://get.docker.com/ | sh
+
 # Install Composer
 RUN curl --silent --show-error https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
@@ -25,7 +26,6 @@ RUN composer global require "laravel/envoy=~1.0"
 
 # Install Laravel Vapor CLI
 RUN composer global require "laravel/vapor-cli"
-
 
 # Install Node (with NPM), and Yarn (via package manager for Debian)
 # https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions
