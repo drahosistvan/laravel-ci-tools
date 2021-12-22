@@ -1,4 +1,4 @@
-FROM php:7.4
+FROM php:8.0
 
 # Install linux dependencies
 RUN apt-get update &&  apt-get install -qq curl apt-transport-https git build-essential \
@@ -15,11 +15,12 @@ RUN docker-php-ext-enable mcrypt
 # Install additional php extensions
 RUN docker-php-ext-install zip gd exif sodium
 
-# Install docker
-RUN curl -sSL https://get.docker.com/ | sh
-
 # Install Composer
-RUN curl --silent --show-error https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# copy the Composer PHAR from the Composer image into the PHP image
+ENV COMPOSER_ALLOW_SUPERUSER 1
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# show that both Composer and PHP run as expected
+RUN composer --version && php -v && composer global config --list | grep "vendor-dir" && sleep 5s
 
 # Install Laravel Envoy
 RUN composer global require "laravel/envoy=~1.0"
