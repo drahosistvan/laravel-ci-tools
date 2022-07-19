@@ -4,9 +4,18 @@ This image is for building, testing and deploying Laravel applications from dock
 
 ## Softwares included
 
-- PHP 7.4
-- nodeJS 14 (current LTS version)
+- PHP 8.1
+- Node.js 16 (current LTS version)
 - Yarn
 - Composer
 - Laravel Envoy
 - Laravel Vapor CLI
+
+
+## Example list
+
+- Gitlab CI/CD with Laravel Vapor
+
+## Contributing
+
+If you would like to extend the toolset, or just provide other CI/CD templates, you are welcome!

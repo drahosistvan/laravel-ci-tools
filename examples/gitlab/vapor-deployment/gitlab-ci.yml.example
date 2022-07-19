@@ -1,0 +1,27 @@
+image: drahosistvan/laravel-ci-tools:php8.1
+stages:
+  - deploy
+
+deploy_staging:
+  stage: deploy
+  before_script:
+    - composer install
+  script:
+    - /root/.config/composer/vendor/bin/vapor deploy staging
+  only:
+    - develop
+  environment:
+    name: staging
+    url: https://staging.example.com
+
+deploy_production:
+  stage: deploy
+  before_script:
+    - composer install
+  script:
+    - /root/.config/composer/vendor/bin/vapor deploy production
+  only:
+    - main
+  environment:
+    name: production
+    url: https://production.example.com
