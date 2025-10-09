@@ -1,4 +1,10 @@
-FROM php:8.1
+ARG PHP_VERSION=8.1
+ARG NODE_VERSION=20
+
+FROM php:${PHP_VERSION}
+
+# Re-declare NODE_VERSION after FROM to make it available in this stage
+ARG NODE_VERSION=20
 
 # Install linux dependencies
 RUN apt-get update &&  apt-get install -qq curl apt-transport-https git build-essential \
@@ -17,7 +23,7 @@ RUN docker-php-ext-install zip gd exif sodium
 
 # Install Composer
 # copy the Composer PHAR from the Composer image into the PHP image
-ENV COMPOSER_ALLOW_SUPERUSER 1
+ENV COMPOSER_ALLOW_SUPERUSER=1
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # show that both Composer and PHP run as expected
 RUN composer --version && php -v && composer global config --list | grep "vendor-dir" && sleep 5s
@@ -30,7 +36,7 @@ RUN composer global require "laravel/vapor-cli"
 
 # Install Node (with NPM), and Yarn (via package manager for Debian)
 # https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions
-RUN curl -sL https://deb.nodesource.com/setup_20.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash -
 RUN apt-get update \
     && apt-get install -y \
     nodejs

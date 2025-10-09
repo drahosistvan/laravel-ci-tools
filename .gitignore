@@ -1,1 +1,83 @@
+# IDE and Editor files
+*.swp
+*.swo
+*~
+
+# Build artifacts and temporary files
+*.log
+*.tmp
+.cache/
+
+# Docker files (if building locally)
+.dockerignore.local
+
+# Local environment files
+.env
+.env.local
+.env.*.local
+
+# Node modules (if running any local Node scripts)
+node_modules/
+
+# Composer vendor (if running any local PHP scripts)
+vendor/
+
+# Git
+.git/
+*.orig
+
+# Backup files
+*.bak
+*.backup
+
+# Test coverage
+coverage/
+.phpunit.result.cache
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+.fuse_hidden*
+.directory
+.Trash-*
+
+# JetBrains IDEs
 .idea/
+*.iml
+*.iws
+.idea_modules/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Vim
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Archives
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip

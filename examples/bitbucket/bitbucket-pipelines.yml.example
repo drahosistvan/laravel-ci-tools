@@ -1,0 +1,66 @@
+# Bitbucket Pipelines Deployment Example
+# This example shows how to build, test, and deploy a Laravel application
+
+image: drahosistvan/laravel-ci-tools:latest
+# Or use specific version:
+# image: drahosistvan/laravel-ci-tools:php8.3-node20
+
+definitions:
+  steps:
+    - step: &build
+        name: Build Application
+        caches:
+          - composer
+          - node
+        script:
+          - composer install --no-interaction --prefer-dist --optimize-autoloader
+          - npm ci
+          - npm run build
+        artifacts:
+          - vendor/**
+          - node_modules/**
+          - public/build/**
+
+    - step: &test
+        name: Run Tests
+        script:
+          - cp .env.example .env
+          - php artisan key:generate
+          - php artisan test
+
+    - step: &deploy-staging
+        name: Deploy to Staging
+        deployment: staging
+        script:
+          - composer install --no-dev --optimize-autoloader
+          - ~/.composer/vendor/bin/vapor deploy staging
+
+    - step: &deploy-production
+        name: Deploy to Production
+        deployment: production
+        trigger: manual  # Require manual approval
+        script:
+          - composer install --no-dev --optimize-autoloader
+          - ~/.composer/vendor/bin/vapor deploy production
+
+pipelines:
+  default:
+    - step: *build
+    - step: *test
+
+  branches:
+    develop:
+      - step: *build
+      - step: *test
+      - step: *deploy-staging
+
+    main:
+      - step: *build
+      - step: *test
+      - step: *deploy-production
+
+  pull-requests:
+    '**':
+      - step: *build
+      - step: *test
+

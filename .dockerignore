@@ -1,0 +1,14 @@
+.git
+.github
+.gitignore
+README.md
+LICENSE
+*.md
+.env
+.env.*
+docker-compose.yml
+.DS_Store
+.vscode
+.idea
+*.log
+

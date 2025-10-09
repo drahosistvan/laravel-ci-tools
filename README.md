@@ -1,21 +1,222 @@
-# Laravel CI tools
+# Laravel CI Tools
 
-This image is for building, testing and deploying Laravel applications from docker based CI/CD solutions. This image was tested with Bitbucket Pipelines and Gitlab CI/CD, but feel free to use any other CI/CD solutions.
+Docker images for building, testing, and deploying Laravel applications in CI/CD pipelines. Supports multiple PHP and Node.js version combinations with all essential Laravel tools pre-installed.
 
-## Softwares included
+**Docker Hub:** [drahosistvan/laravel-ci-tools](https://hub.docker.com/r/drahosistvan/laravel-ci-tools)
 
-- PHP 8.1
-- Node.js 16 (current LTS version)
-- Yarn
-- Composer
-- Laravel Envoy
-- Laravel Vapor CLI
+## 🚀 Quick Start
 
+```bash
+# Pull the latest image
+docker pull drahosistvan/laravel-ci-tools:latest
 
-## Example list
+# Or use in your CI/CD pipeline
+image: drahosistvan/laravel-ci-tools:php8.3-node20
+```
 
-- Gitlab CI/CD with Laravel Vapor
+## 📦 What's Included
 
-## Contributing
+- **PHP**: 8.1, 8.2, 8.3, 8.4
+- **Node.js**: 20 (LTS), 22 (LTS), 24
+- **Package Managers**: Composer (latest), NPM (bundled), Yarn (latest)
+- **Laravel Tools**: Envoy, Vapor CLI
+- **PHP Extensions**: zip, gd, exif, sodium, mcrypt
+- **System Tools**: Git, rsync, SSH client
 
-If you would like to extend the toolset, or just provide other CI/CD templates, you are welcome!
+## 🏷️ Available Tags
+
+### Latest (Newest Versions)
+- `latest` → PHP 8.4 + Node 24
+
+### PHP Version Tags (with Node 20 LTS)
+- `php8` → PHP 8.4 + Node 20
+- `php8.1` → PHP 8.1 + Node 20
+- `php8.2` → PHP 8.2 + Node 20
+- `php8.3` → PHP 8.3 + Node 20
+- `php8.4` → PHP 8.4 + Node 20
+
+### Node Version Tags (with PHP 8.3)
+- `node20` → PHP 8.3 + Node 20
+- `node22` → PHP 8.3 + Node 22
+- `node24` → PHP 8.3 + Node 24
+
+### Specific Combinations
+Format: `php{VERSION}-node{VERSION}`
+
+**All 12 combinations available:**
+- PHP 8.1: `php8.1-node20`, `php8.1-node22`, `php8.1-node24`
+- PHP 8.2: `php8.2-node20`, `php8.2-node22`, `php8.2-node24`
+- PHP 8.3: `php8.3-node20`, `php8.3-node22`, `php8.3-node24`
+- PHP 8.4: `php8.4-node20`, `php8.4-node22`, `php8.4-node24`
+
+## 💻 Usage Examples
+
+### GitLab CI/CD
+
+```yaml
+image: drahosistvan/laravel-ci-tools:php8.3-node20
+
+stages:
+  - build
+  - test
+  - deploy
+
+build:
+  stage: build
+  script:
+    - composer install --no-interaction --prefer-dist --optimize-autoloader
+    - npm install
+    - npm run build
+
+test:
+  stage: test
+  script:
+    - php artisan test
+
+deploy:
+  stage: deploy
+  script:
+    - ~/.composer/vendor/bin/vapor deploy production
+  only:
+    - main
+```
+
+### GitHub Actions
+
+```yaml
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: drahosistvan/laravel-ci-tools:php8.3-node20
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install dependencies
+        run: |
+          composer install
+          npm ci
+      
+      - name: Build assets
+        run: npm run build
+      
+      - name: Run tests
+        run: php artisan test
+```
+
+### Bitbucket Pipelines
+
+```yaml
+image: drahosistvan/laravel-ci-tools:php8.3-node20
+
+pipelines:
+  default:
+    - step:
+        name: Build and Test
+        caches:
+          - composer
+          - node
+        script:
+          - composer install
+          - npm ci
+          - npm run build
+          - php artisan test
+```
+
+## 🛠️ Local Development
+
+### Pull and Use an Image
+
+```bash
+# Pull specific version
+docker pull drahosistvan/laravel-ci-tools:php8.3-node20
+
+# Run interactive shell
+docker run -it --rm drahosistvan/laravel-ci-tools:latest bash
+
+# Run specific commands
+docker run --rm drahosistvan/laravel-ci-tools:latest php -v
+docker run --rm drahosistvan/laravel-ci-tools:latest node -v
+docker run --rm drahosistvan/laravel-ci-tools:latest composer --version
+```
+
+### Build Custom Image Locally
+
+```bash
+# Using the build script
+./build/build.sh 8.3 20
+
+# Or manually with Docker
+docker build \
+  --build-arg PHP_VERSION=8.3 \
+  --build-arg NODE_VERSION=20 \
+  -t laravel-ci-tools:php8.3-node20 \
+  -f src/Dockerfile \
+  .
+
+# Build all combinations
+./build/build-all.sh
+
+# Build and push to Docker Hub
+./build/build-all.sh --push
+```
+
+### Test an Image
+
+```bash
+# Test a specific combination
+./build/test.sh 8.3 20
+```
+
+## 🔄 Automated Builds
+
+All images are automatically rebuilt:
+
+- ✅ **On push to main branch** - Triggered by code changes
+- ✅ **On tagged releases** - Version-specific builds
+- ✅ **Weekly schedule** - Every Monday at 2 AM UTC for security updates
+- ✅ **Manual dispatch** - On-demand builds via GitHub Actions
+
+### Manual Workflow Trigger
+
+1. Go to the repository's **Actions** tab
+2. Select "Build and Push Docker Images"
+3. Click **Run workflow**
+4. Optionally specify PHP and Node versions
+5. Click **Run workflow**
+
+## 📊 Support Matrix
+
+**Total Combinations:** 12 images (4 PHP × 3 Node.js versions)
+
+| PHP | Node 20 | Node 22 | Node 24 |
+|-----|---------|---------|---------|
+| 8.1 | ✅      | ✅      | ✅      |
+| 8.2 | ✅      | ✅      | ✅      |
+| 8.3 | ✅      | ✅      | ✅      |
+| 8.4 | ✅      | ✅      | ✅      |
+
+## 📚 Examples
+
+More CI/CD examples available in the `examples/` folder:
+
+- **GitLab CI** - Laravel Vapor deployment
+- **GitHub Actions** - Complete workflow with testing
+- **Bitbucket Pipelines** - Pipeline configuration
+
+## 🤝 Contributing
+
+Contributions are welcome! You can help by:
+
+- Adding new tools to the Docker image
+- Providing CI/CD templates for other platforms
+- Reporting issues or suggesting improvements
+- Improving documentation
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+## 📄 License
+
+This project is free and unencumbered software released into the public domain. See the [LICENSE](LICENSE) file for details.
+
+---

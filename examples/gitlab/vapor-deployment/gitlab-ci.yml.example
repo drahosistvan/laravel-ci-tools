@@ -1,27 +1,75 @@
-image: drahosistvan/laravel-ci-tools:php8.1
+# Laravel Vapor Deployment with GitLab CI/CD
+# This example shows how to deploy a Laravel application using Laravel Vapor
+
+# Use the latest image with PHP 8.3 and Node 20 (LTS)
+# You can also use specific versions like:
+# - drahosistvan/laravel-ci-tools:php8.1-node20
+# - drahosistvan/laravel-ci-tools:php8.2-node22
+# - drahosistvan/laravel-ci-tools:php8.3 (PHP 8.3 + Node 20)
+image: drahosistvan/laravel-ci-tools:latest
+
 stages:
+  - build
+  - test
   - deploy
 
+# Cache composer and npm dependencies
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - vendor/
+    - node_modules/
+
+# Install dependencies
+build:
+  stage: build
+  script:
+    - composer install --no-interaction --prefer-dist --optimize-autoloader
+    - npm ci
+    - npm run build
+  artifacts:
+    paths:
+      - vendor/
+      - node_modules/
+      - public/build/
+    expire_in: 1 hour
+
+# Run tests (optional)
+test:
+  stage: test
+  script:
+    - php artisan test
+  dependencies:
+    - build
+
+# Deploy to staging environment
 deploy_staging:
   stage: deploy
   before_script:
-    - composer install
+    - composer install --no-interaction --no-dev --optimize-autoloader
   script:
-    - /root/.config/composer/vendor/bin/vapor deploy staging
+    - ~/.composer/vendor/bin/vapor deploy staging
   only:
     - develop
   environment:
     name: staging
     url: https://staging.example.com
+  dependencies:
+    - build
 
+# Deploy to production environment
 deploy_production:
   stage: deploy
   before_script:
-    - composer install
+    - composer install --no-interaction --no-dev --optimize-autoloader
   script:
-    - /root/.config/composer/vendor/bin/vapor deploy production
+    - ~/.composer/vendor/bin/vapor deploy production
   only:
     - main
+    - master
+  when: manual  # Require manual approval for production
   environment:
     name: production
     url: https://production.example.com
+  dependencies:
+    - build

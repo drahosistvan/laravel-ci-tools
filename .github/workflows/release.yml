@@ -1,0 +1,64 @@
+name: Create Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., v1.0.0)'
+        required: true
+        type: string
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate version format
+        run: |
+          if [[ ! "${{ github.event.inputs.version }}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Error: Version must be in format v1.0.0"
+            exit 1
+          fi
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.event.inputs.version }}
+          release_name: Release ${{ github.event.inputs.version }}
+          body: |
+            ## Laravel CI Tools ${{ github.event.inputs.version }}
+            
+            ### Docker Images Built
+            
+            This release includes all PHP and Node.js combinations:
+            
+            **PHP Versions:** 8.1, 8.2, 8.3, 8.4
+            **Node.js Versions:** 20, 22, 24, 25, 26
+            
+            **Total Combinations:** 20 images
+            
+            ### Quick Start
+            
+            ```bash
+            docker pull drahosistvan/laravel-ci-tools:latest
+            ```
+            
+            ### Available Tags
+            
+            - `latest` - PHP 8.3 + Node 20 (LTS)
+            - `php8.1-node20`, `php8.2-node22`, etc. - Specific combinations
+            - `php8`, `php8.1`, `php8.2`, `php8.3`, `php8.4` - PHP versions with Node 20
+            - `node20`, `node22`, `node24`, `node25`, `node26` - Node versions with PHP 8.3
+            
+            See [README.md](README.md) for full documentation.
+          draft: false
+          prerelease: false
+
+      - name: Trigger Docker Build
+        run: |
+          echo "Release created. Docker images will be built automatically via the docker-build workflow."
+

@@ -1,0 +1,103 @@
+# GitHub Actions Deployment Example
+# This example shows how to build, test, and deploy a Laravel application
+
+name: Laravel CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    container:
+      image: drahosistvan/laravel-ci-tools:latest
+      # Or use specific version:
+      # image: drahosistvan/laravel-ci-tools:php8.3-node20
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Copy .env
+        run: cp .env.example .env
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Generate application key
+        run: php artisan key:generate
+
+      - name: Install NPM dependencies
+        run: npm ci
+
+      - name: Build assets
+        run: npm run build
+
+      - name: Run tests
+        run: php artisan test
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: laravel-build
+          path: |
+            vendor/
+            public/build/
+
+  deploy-staging:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop'
+    container:
+      image: drahosistvan/laravel-ci-tools:latest
+
+    environment:
+      name: staging
+      url: https://staging.example.com
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: laravel-build
+
+      - name: Deploy with Vapor
+        env:
+          VAPOR_API_TOKEN: ${{ secrets.VAPOR_API_TOKEN }}
+        run: |
+          composer install --no-dev --optimize-autoloader
+          ~/.composer/vendor/bin/vapor deploy staging
+
+  deploy-production:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    container:
+      image: drahosistvan/laravel-ci-tools:latest
+
+    environment:
+      name: production
+      url: https://production.example.com
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: laravel-build
+
+      - name: Deploy with Vapor
+        env:
+          VAPOR_API_TOKEN: ${{ secrets.VAPOR_API_TOKEN }}
+        run: |
+          composer install --no-dev --optimize-autoloader
+          ~/.composer/vendor/bin/vapor deploy production
+
