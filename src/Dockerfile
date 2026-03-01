@@ -19,7 +19,7 @@ RUN pecl install mcrypt
 RUN docker-php-ext-enable mcrypt
 
 # Install additional php extensions
-RUN docker-php-ext-install zip gd exif sodium
+RUN docker-php-ext-install zip gd exif sodium intl bcmath
 
 # Install Composer
 # copy the Composer PHAR from the Composer image into the PHP image
