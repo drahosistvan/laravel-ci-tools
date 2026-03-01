@@ -28,11 +28,11 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # show that both Composer and PHP run as expected
 RUN composer --version && php -v && composer global config --list | grep "vendor-dir" && sleep 5s
 
-# Install Laravel Envoy
-RUN composer global require "laravel/envoy=~1.0"
+# Install Laravel Envoy (^2.0 supports PHP 8.x; ~1.0 only supported PHP 7.x)
+RUN composer global require "laravel/envoy:^2.0" --no-interaction --prefer-dist
 
 # Install Laravel Vapor CLI
-RUN composer global require "laravel/vapor-cli"
+RUN composer global require "laravel/vapor-cli" --no-interaction --prefer-dist
 
 # Install Node (with NPM), and Yarn (via package manager for Debian)
 # https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions
