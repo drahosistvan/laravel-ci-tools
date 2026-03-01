@@ -11,50 +11,49 @@ Docker images for building, testing, and deploying Laravel applications in CI/CD
 docker pull drahosistvan/laravel-ci-tools:latest
 
 # Or use in your CI/CD pipeline
-image: drahosistvan/laravel-ci-tools:php8.3-node20
+image: drahosistvan/laravel-ci-tools:php8.5-node24
 ```
 
 ## 📦 What's Included
 
-- **PHP**: 8.1, 8.2, 8.3, 8.4
-- **Node.js**: 20 (LTS), 22 (LTS), 24
+- **PHP**: 8.2, 8.3, 8.4, 8.5
+- **Node.js**: 24 (Active LTS), 25 (Latest)
 - **Package Managers**: Composer (latest), NPM (bundled), Yarn (latest)
 - **Laravel Tools**: Envoy, Vapor CLI
-- **PHP Extensions**: zip, gd, exif, sodium, mcrypt
+- **PHP Extensions**: zip, gd, exif, sodium, intl, bcmath, mcrypt
 - **System Tools**: Git, rsync, SSH client
 
 ## 🏷️ Available Tags
 
 ### Latest (Newest Versions)
-- `latest` → PHP 8.4 + Node 24
+- `latest` → PHP 8.5 + Node 25
 
-### PHP Version Tags (with Node 20 LTS)
-- `php8` → PHP 8.4 + Node 20
-- `php8.1` → PHP 8.1 + Node 20
-- `php8.2` → PHP 8.2 + Node 20
-- `php8.3` → PHP 8.3 + Node 20
-- `php8.4` → PHP 8.4 + Node 20
+### PHP Version Tags (with Node 24, Active LTS)
+- `php8` → PHP 8.5 + Node 24
+- `php8.2` → PHP 8.2 + Node 24
+- `php8.3` → PHP 8.3 + Node 24
+- `php8.4` → PHP 8.4 + Node 24
+- `php8.5` → PHP 8.5 + Node 24
 
-### Node Version Tags (with PHP 8.3)
-- `node20` → PHP 8.3 + Node 20
-- `node22` → PHP 8.3 + Node 22
-- `node24` → PHP 8.3 + Node 24
+### Node Version Tags (with PHP 8.5, Latest)
+- `node24` → PHP 8.5 + Node 24
+- `node25` → PHP 8.5 + Node 25
 
 ### Specific Combinations
 Format: `php{VERSION}-node{VERSION}`
 
-**All 12 combinations available:**
-- PHP 8.1: `php8.1-node20`, `php8.1-node22`, `php8.1-node24`
-- PHP 8.2: `php8.2-node20`, `php8.2-node22`, `php8.2-node24`
-- PHP 8.3: `php8.3-node20`, `php8.3-node22`, `php8.3-node24`
-- PHP 8.4: `php8.4-node20`, `php8.4-node22`, `php8.4-node24`
+**All 8 combinations available:**
+- PHP 8.2: `php8.2-node24`, `php8.2-node25`
+- PHP 8.3: `php8.3-node24`, `php8.3-node25`
+- PHP 8.4: `php8.4-node24`, `php8.4-node25`
+- PHP 8.5: `php8.5-node24`, `php8.5-node25`
 
 ## 💻 Usage Examples
 
 ### GitLab CI/CD
 
 ```yaml
-image: drahosistvan/laravel-ci-tools:php8.3-node20
+image: drahosistvan/laravel-ci-tools:php8.5-node24
 
 stages:
   - build
@@ -88,7 +87,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: drahosistvan/laravel-ci-tools:php8.3-node20
+      image: drahosistvan/laravel-ci-tools:php8.5-node24
     steps:
       - uses: actions/checkout@v4
       
@@ -107,7 +106,7 @@ jobs:
 ### Bitbucket Pipelines
 
 ```yaml
-image: drahosistvan/laravel-ci-tools:php8.3-node20
+image: drahosistvan/laravel-ci-tools:php8.5-node24
 
 pipelines:
   default:
@@ -129,7 +128,7 @@ pipelines:
 
 ```bash
 # Pull specific version
-docker pull drahosistvan/laravel-ci-tools:php8.3-node20
+docker pull drahosistvan/laravel-ci-tools:php8.5-node24
 
 # Run interactive shell
 docker run -it --rm drahosistvan/laravel-ci-tools:latest bash
@@ -144,13 +143,13 @@ docker run --rm drahosistvan/laravel-ci-tools:latest composer --version
 
 ```bash
 # Using the build script
-./build/build.sh 8.3 20
+./build/build.sh 8.5 24
 
 # Or manually with Docker
 docker build \
-  --build-arg PHP_VERSION=8.3 \
-  --build-arg NODE_VERSION=20 \
-  -t laravel-ci-tools:php8.3-node20 \
+  --build-arg PHP_VERSION=8.5 \
+  --build-arg NODE_VERSION=24 \
+  -t laravel-ci-tools:php8.5-node24 \
   -f src/Dockerfile \
   .
 
@@ -165,7 +164,7 @@ docker build \
 
 ```bash
 # Test a specific combination
-./build/test.sh 8.3 20
+./build/test.sh 8.5 24
 ```
 
 ## 🔄 Automated Builds
@@ -174,7 +173,7 @@ All images are automatically rebuilt:
 
 - ✅ **On push to main branch** - Triggered by code changes
 - ✅ **On tagged releases** - Version-specific builds
-- ✅ **Weekly schedule** - Every Monday at 2 AM UTC for security updates
+- ✅ **Monthly schedule** - 1st of every month at 2 AM UTC for security updates
 - ✅ **Manual dispatch** - On-demand builds via GitHub Actions
 
 ### Manual Workflow Trigger
@@ -187,14 +186,14 @@ All images are automatically rebuilt:
 
 ## 📊 Support Matrix
 
-**Total Combinations:** 12 images (4 PHP × 3 Node.js versions)
+**Total Combinations:** 8 images (4 PHP × 2 Node.js versions)
 
-| PHP | Node 20 | Node 22 | Node 24 |
-|-----|---------|---------|---------|
-| 8.1 | ✅      | ✅      | ✅      |
-| 8.2 | ✅      | ✅      | ✅      |
-| 8.3 | ✅      | ✅      | ✅      |
-| 8.4 | ✅      | ✅      | ✅      |
+| PHP  | Node 24 (Active LTS) | Node 25 (Latest) |
+|------|----------------------|------------------|
+| 8.2  | ✅                   | ✅               |
+| 8.3  | ✅                   | ✅               |
+| 8.4  | ✅                   | ✅               |
+| 8.5  | ✅                   | ✅               |
 
 ## 📚 Examples
 
